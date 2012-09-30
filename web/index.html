@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		 <!--meta http-equiv="Content-Type" content="text/html; charset=windows-1251"-->
+        <title>Бурштинський кадр</title>
+
+        <script type='text/javascript' src='dwr/engine.js'> </script>
+        <script type='text/javascript' src='dwr/util.js'> </script>
+        <script type='text/javascript' src='dwr/interface/Clock.js'> </script>
+
+        <script type="text/javascript" src="lib.js/jquery.js"></script>
+		
+        <script type="text/javascript" src="lib.js/flot/jquery.flot.js"></script>
+ 	<link rel="stylesheet" type="text/css" media="screen" href="lib.js/grid/jquery-ui-custom.css" >
+        <link rel="stylesheet" type="text/css" media="screen" href="lib.js/grid/ui.jqgrid.css" >			
+        <script type="text/javascript" src="lib.js/grid/i18n/grid.locale-ru.js"   ></script>
+        <script type="text/javascript" src="lib.js/grid/jquery.jqGrid.min.js"></script>
+
+        <script type="text/javascript" src="js/consts.js"></script>	
+        <script type="text/javascript" src="js/hChart.js"></script>	
+        <script type="text/javascript" src="js/hTable.js"></script>	
+        <script type="text/javascript" src="js/sTable.js"></script>
+        <script type="text/javascript" src="js/sClock.js"></script>
+        <script type="text/javascript" src="js/sChart.js"></script>
+
+    </head> 
+
+    <body> 
+        <script type="text/javascript" >
+            document.write ("<a href='index.html?id=7&rnd=" + Math.random() +"'>");
+        </script>
+        <div id="btnDisplay"  style="position:absolute; left:  0px; top:  666px; width: 600px; height: 90px ;" >
+            <div id="currSecond" style="position:absolute; left: 30px; top:   0px; width: 800px; height: 14px; font-size:100%">                
+            </div>
+            <div id="currMinute" style="position:absolute; left: 30px; top:  14px; width: 800px; height: 14px; font-size:100%">
+            </div>
+            <div id="initParams" style="position:absolute; left: 30px; top:  28px; width: 800px; height: 14px; font-size:100%">
+            </div>
+            <div id="archSecond" style="position:absolute; left: 30px; top:  42px; width: 18000px; height: 14px; font-size:100%">
+            </div>
+            <div id="archMinute" style="position:absolute; left: 30px; top:  64px; width: 18000px; height: 28px; font-size:100%">
+            </div>
+        </div>
+
+        <div id="hTablp" style="position:absolute; left: 10px; top: 10px; width: 150px">
+            <table id="hTable"></table>
+        </div>        
+        <div id="hChart"  style="position:absolute; left:405px; top: 5px; width: 90px; height: 510px"></div>
+        <div id="header"  style="position:absolute; left:570px; top: 0px; width: 400px; height: 20px">
+            <h1>1Контроль обміну електроенергією</h1>
+	</div>
+        <div id="sTablep" style="position:absolute; left:570px; top:130px; width: 600px; height: 500px">
+            <table id="sTable"></table>
+        </div>
+        <div id="namcha"  style="position:absolute; left:570px; top:300px; width: 400px; height: 20px">
+            <p>Відхилення експорту за останні 30 хвилин</p>
+	</div>
+        <div id="sChart" 	style="position:absolute; left: 500px; top: 320px; width: 400px; height:240px;"></div>	
+        <!-- -->		
+    </body>
+</html>
