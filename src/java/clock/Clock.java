@@ -7,8 +7,8 @@ import filter.ContextPathRequestFilter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletContext;
-import org.apache.log4j.Logger;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContextFactory;
@@ -21,8 +21,8 @@ public class Clock implements Runnable {
     /**
      *
      */
-    public static final Logger log=Logger.getLogger(Clock.class);
-    private static final MyLog myLog = new MyLog("c:\\123.txt");
+    private static final Logger log=Logger.getLogger(Clock.class.getName());
+
     private static final Vals vals = new Vals();
     private ServerContext sctx;
     long jdto;
@@ -30,14 +30,12 @@ public class Clock implements Runnable {
     boolean isPage = false;
     
     public Clock(int a) {
-        log.info("Hello World!");
-        myLog.log(Level.WARNING, "Init Clock(int a) 22");
+        log.info("===================================  Init Clock(int a)");
         Cnst.initEnv();
     }
 
     public Clock() {
-        log.info("Hello World!");
-        myLog.log(Level.WARNING, "Init Clock()");
+        log.info("===================================  Init Clock()");
         Cnst.initEnv();
         ServletContext servletContext = WebContextFactory.get().getServletContext();
         sctx = ServerContextFactory.get(servletContext);
@@ -49,12 +47,12 @@ public class Clock implements Runnable {
     /**
      *
      */
-    public synchronized void connect() {
-        myLog.log(Level.WARNING, "   !!! connected");
+    public synchronized void connect() {        
+        log.info("! connected");
         if (!isPage) {
             new Thread(this).start();
             isPage = true;
-            myLog.log(Level.WARNING, "do Thread(this).start()");
+            log.info("do Thread(this).start()");
         }
         isNew = true;
     }
@@ -65,14 +63,12 @@ public class Clock implements Runnable {
     @Override
     public void run() {
         try {
-            myLog.log(Level.WARNING, " do run()");
-//            String path = "/clock/index.html";
+            log.info(" do run()");
             String path = "/index.html";
             
             while (isPage) {
                 String rcp = ContextPathRequestFilter.getContextPath();
                 String rp = rcp + path;
-//                myLog.log(Level.WARNING, "rp = '" + rp + "'");
 
                 Date dt = new java.util.Date();
                 long jdt = dt.getTime() / 1000;
@@ -108,7 +104,8 @@ public class Clock implements Runnable {
                         ) {
                         String sM = vals.getMinutes();
                         pages.setValue("currMinute", sM);
-                        myLog.log(Level.WARNING, "currMinute = '" + sM + "'");
+                        //                myLog.log(Level.WARNING, "rp = '" + rp + "'");
+                        log.log(Level.INFO, "currMinute = ''{0}''", sM);
                     }
 
                     String sS;
@@ -123,9 +120,8 @@ public class Clock implements Runnable {
                  utilAll.addOptions("chatlog", messages, "text");
 				
                  */
-//                    myLog.log(Level.WARNING, "Sent message" + pages.toString());
+//                    log.log(Level.INFO, "Sent message{0}", pages.toString());
                     Thread.sleep(300);
-                    log.info("------------- Hello World!");
                 }
             }
 
@@ -134,7 +130,7 @@ public class Clock implements Runnable {
             pages.setValue("currSecond", "усё");
 
         } catch (InterruptedException ex) {
-            myLog.log(Level.WARNING, "CLOCK: InterruptedException");
+            log.warning("CLOCK: InterruptedException");
         }
     }
 }
