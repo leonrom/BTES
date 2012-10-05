@@ -30,13 +30,14 @@ public class Cnst {
         Properties prop = new Properties();
         try {
             //load a properties file
-            prop.load(new FileInputStream("config/btes.properties"));
+            prop.load(new FileInputStream("/config/btes.properties"));
 
             Cnst.nPoints = Integer.parseInt(prop.getProperty("nPoints", "360"));
             Cnst.nusred = Integer.parseInt(prop.getProperty("nusred", "10"));
 
         } catch (IOException ex) {
-            System.err.println("? Init() :" + ex);
+            System.err.println("? 1 Init() :" + ex);
+            System.out.println("? 2 Init() :" + ex);
         }
     }
 
@@ -49,5 +50,3 @@ public class Cnst {
         InitCnf();
     }
 }
-//z`
-//http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html
