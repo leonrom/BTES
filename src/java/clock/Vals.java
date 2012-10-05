@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 public class Vals {
     private static final boolean isDB = true;
     private static final Random random = new Random();
+    private Date timSec;
     private double P0 = 0;
     private double PW = 0;
     private double dP = 0;
@@ -42,19 +43,6 @@ public class Vals {
 
     public Vals() {
         log.log(Level.INFO, null, "=== started ===");
-        try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-        } catch (ClassNotFoundException e) {
-            System.err.println("Unable to load oracle.jdbc.driver.OracleDriver" + e);
-            return;
-        }
-        try {
-            Class.forName("org.firebirdsql.jdbc.FBDriver");
-        } catch (Exception e) {
-            System.err.println("Unable to load org.firebirdsql.jdbc.FBDriver" + e);
-            return;
-        }
-        conR_open();
     }
 
     private void ShowErr(SQLException ex, String txt) {
@@ -65,28 +53,71 @@ public class Vals {
         log.log(Level.SEVERE, null, "VendorError: " + ex.getErrorCode());
     }
 
+    public void connectDB(){    
+        conR_init();
+        conR_open();    
+    }
+
+    private void conR_init() {
+        try {
+//            Class.forName("oracle.jdbc.driver.OracleDriver");
+            Class.forName("oracle.jdbc.OracleDriver");
+        } catch (ClassNotFoundException e) {
+            System.err.println("Unable to load oracle.jdbc.driver.OracleDriver" + e);
+            return;
+        }
+        try {
+            Class.forName("org.firebirdsql.jdbc.FBDriver");
+        } catch (Exception e) {
+            System.err.println("Unable to load org.firebirdsql.jdbc.FBDriver" + e);
+        }
+    }
+
     private void conR_open() {
+/*        
         try {            
             conO = DriverManager.getConnection("jdbc:oracle:thin:@"
                     + "(DESCRIPTION =(SOURCE_ROUTE = ASDUES)"
-                    + "(ADDRESS_LIST =(ADDRESS = (PROTOCOL = tcp)(HOST = 10.11.254.24)(PORT = 1521))"
-                    + "(ADDRESS = (PROTOCOL = tcp)(HOST = 10.11.254.26)(PORT = 1521)))"
+                    + "(ADDRESS_LIST =(ADDRESS = (PROTOCOL = tcp)(HOST = 10.11.254.26)(PORT = 1521))"
+                    + "(ADDRESS = (PROTOCOL = tcp)(HOST = 10.11.254.24)(PORT = 1521)))"
                     + "(CONNECT_DATA =(SERVICE_NAME = ASDUES.ZES.LOCAL)))", "OIK", "oik");
         } catch (SQLException ex) {
             ShowErr(ex, "conR_open -------------- 10.11.254.24 ?");
         }  
+*/        
         try {
             conO = DriverManager.getConnection("jdbc:oracle:thin:@"
                     +"(DESCRIPTION ="
-                        +    "(ADDRESS = (PROTOCOL = tcp)(HOST = 10.11.254.24)(PORT = 1521))"
                         +    "(ADDRESS = (PROTOCOL = tcp)(HOST = 10.11.254.26)(PORT = 1521))"
+                        +    "(ADDRESS = (PROTOCOL = tcp)(HOST = 10.11.254.24)(PORT = 1521))"
                         +"(CONNECT_DATA ="
                         +"(SERVER = DEDICATED)"
                         +"(SERVICE_NAME = ASDUES.ZES.LOCAL)"
-                        +"))");
+                        +"))", "OIK", "oik");
         } catch (SQLException ex) {
             ShowErr(ex, "conR_open -------------- 10.11.254.26 ?");
         }
+
+        try {
+            conO = DriverManager.getConnection(
+                    "jdbc:oracle:thin:@//10.11.14.26:1521/ASDUES.ZES.LOCAL", "OIK", "oik");
+        } catch (SQLException ex) {
+            conO = null;
+        }
+        try {
+            conO = DriverManager.getConnection(
+                        "jdbc:oracle:thin:@//10.11.254.24:1521/ASDUES.ZES.LOCAL", "OIK", "oik");
+        } catch (SQLException ex) {
+            conO = null;
+        }
+        if (conO == null){
+            try {
+                conO = DriverManager.getConnection(
+                        "jdbc:oracle:thin:@//10.11.254.26:1521/ASDUES.ZES.LOCAL", "OIK", "oik");
+            } catch (SQLException ex) {
+                conO = null;
+            }
+        }        
         try {
             conS = DriverManager.getConnection(
                     "jdbc:oracle:thin:@//10.11.246.58:1521/XE", "RC", "rc");
@@ -107,7 +138,7 @@ public class Vals {
         if (sRs == null) {
             return false;
         }
-        Date timSec = new java.util.Date(t.getTime() - 1000 * 180);
+        timSec = new java.util.Date(t.getTime() - 1000 * 180);
 
         log.log(Level.FINE, "readSecB");
         String sql;
@@ -123,9 +154,7 @@ public class Vals {
             int k = 0, n;
             while (rs.next()) {
                 timSec = rs.getTimestamp("timMark");
-                String tim = timSec.toString();
-                Date dtB = timSec;
-                long L = dtB.getTime();
+//                String tim = timSec.toString(); Date dtB = timSec; long L = dtB.getTime();
 
                 double dp = rs.getFloat("dP");
                 if (k++ == 0) {
@@ -151,6 +180,13 @@ public class Vals {
             } else {
                 dA = 999;
             }
+            
+            String se = Cnst.fmt.format(dA) + " " + Cnst.fmi.format(n) + " ";
+            for (int i=0; i < aA.size(); i++){
+                se += Cnst.fmt.format(aA.get(i));
+            }
+            log.log(Level.INFO, null, "==> " + se);
+            
         } catch (SQLException ex) {
             ShowErr(ex, "readSecB");
             return false;
@@ -182,10 +218,9 @@ public class Vals {
             getSecondsR();
         }
         long ns = calcCurTimSecond(t);
-        return (Cnst.timeformat.format(t) + " " + Cnst.fmt.format(dP) + " "
+        return (Cnst.timeformat.format(timSec) + " " + Cnst.fmt.format(dP) + " "
                 + Cnst.fmt.format(dA) + " " + Cnst.fmt.format(PW) + " " + Cnst.fmt.format(PZ) + " "
                 + Cnst.fmi.format(ns)); // номер секунды, к которой приписывается усреднение
-
     }
 
     public String getMinutes() {
